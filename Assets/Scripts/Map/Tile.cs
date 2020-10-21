@@ -4,22 +4,48 @@ public class Tile : MonoBehaviour
 {
     private Mesh _mesh;
 
+    private MeshRenderer _renderer;
+    private MeshFilter _filter;
+    private MeshCollider _collider;
+
     public void Initialize(int x, int y)
     {
         _mesh = CreateQuadMesh();
 
-        var meshRenderer = gameObject.AddComponent<MeshRenderer>();
-        meshRenderer.material = new Material(Shader.Find("Custom/TileUnlit"));
-        meshRenderer.material.color = new Color(Random.Range(0.0f, 1.0f), Random.Range(0.0f, 1.0f), Random.Range(0.0f, 1.0f));
+        _renderer = gameObject.AddComponent<MeshRenderer>();
+        _renderer.material = new Material(Shader.Find("Custom/TileUnlit"))
+        {
+            color = new Color(Random.Range(0.0f, 1.0f), Random.Range(0.0f, 1.0f), Random.Range(0.0f, 1.0f))
+        };
 
-        var meshFilter = gameObject.AddComponent<MeshFilter>();
-        meshFilter.mesh = _mesh;
+        _filter = gameObject.AddComponent<MeshFilter>();
+        _filter.mesh = _mesh;
 
-        var meshCollider = gameObject.AddComponent<MeshCollider>();
-        meshCollider.sharedMesh = _mesh;
+        _collider = gameObject.AddComponent<MeshCollider>();
+        _collider.sharedMesh = _mesh;
 
-        gameObject.transform.position = new Vector3(x * 1, 0.0f, y * 1);
-        gameObject.transform.rotation = Quaternion.Euler(90.0f, 0.0f, 0.0f);
+        gameObject.transform.position = new Vector3(x * 1.0f, 0.0f, y * 1.0f);
+        gameObject.transform.rotation = Quaternion.Euler(0.0f, 0.0f, 0.0f);
+        gameObject.layer = (int)EditorLayers.MapTile;
+    }
+
+    public Vector3 GetClosestVertex(Vector3 point)
+    {
+        var vertex = Vector3.zero;
+        float minDistance = float.MaxValue;
+        var verts = _filter.mesh.vertices;
+        var localToWorld = transform.localToWorldMatrix;
+        for (int i = 0; i < verts.Length; i++)
+        {
+            var vert = localToWorld.MultiplyPoint3x4(verts[i]);
+            float distance = (point - vert).magnitude;
+            if (distance < minDistance)
+            {
+                minDistance = distance;
+                vertex = vert;
+            }
+        }
+        return vertex;
     }
 
     private Mesh CreateQuadMesh()
@@ -28,10 +54,10 @@ public class Tile : MonoBehaviour
 
         var vertices = new[]
         {
-            new Vector3(-0.5f, -0.5f, 0.0f),
-            new Vector3(0.5f, -0.5f, 0.0f),
-            new Vector3(-0.5f, 0.5f, 0.0f),
-            new Vector3(0.5f, 0.5f, 0.0f)
+            new Vector3(-0.5f, 0.0f, -0.5f),
+            new Vector3(0.5f, 0.0f, -0.5f),
+            new Vector3(-0.5f, 0.0f, 0.5f),
+            new Vector3(0.5f, 0.0f, 0.5f)
         };
         mesh.vertices = vertices;
 

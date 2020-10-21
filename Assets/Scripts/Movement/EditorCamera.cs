@@ -2,6 +2,18 @@
 
 public class EditorCamera : MonoBehaviour
 {
+    public static Camera MainCamera
+    {
+        get
+        {
+            if (_mainCamera == null)
+            {
+                _mainCamera = Camera.main;
+            }
+            return _mainCamera;
+        }
+    }
+
     [Range(0.01f, 250.0f)]
     public float LookSpeed = 2.0f;
     [Range(0.01f, 250.0f)]
@@ -9,6 +21,8 @@ public class EditorCamera : MonoBehaviour
 
     private float _rotationX;
     private float _rotationY;
+
+    private static Camera _mainCamera;
 
     protected void Update()
     {
