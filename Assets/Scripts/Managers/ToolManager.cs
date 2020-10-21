@@ -66,5 +66,10 @@ public class ToolManager : MonoBehaviour
         RaiseObject.transform.position = new Vector3(pos.x, pos.y, pos.z);
         RaiseObject.transform.position = new Vector3(RaiseObject.transform.position.x, RaiseObject.transform.position.y + 0.15f, RaiseObject.transform.position.z);
         RaiseObject.SetActive(true);
+
+        if (Input.GetMouseButtonUp(0))
+        {
+            tile.Raise(pos);
+        }
     }
 }
