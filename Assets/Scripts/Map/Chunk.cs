@@ -5,6 +5,7 @@ using UnityEngine.Assertions;
 public class Chunk
 {
     private readonly List<Tile> _tiles;
+    private readonly Material _tileMaterial;
     private readonly int _size;
     private readonly GameObject _chunkObj;
 
@@ -17,6 +18,10 @@ public class Chunk
         _tiles = new List<Tile>(size * size);
         _size = size;
         _chunkObj = new GameObject(name);
+        _tileMaterial = new Material(Shader.Find("Custom/TileUnlit"))
+        {
+            color = Color.white
+        };
     }
 
     public void Create()
@@ -40,7 +45,7 @@ public class Chunk
     {
         var go = new GameObject($"{x}_{y}");
         var tile = go.AddComponent<Tile>();
-        tile.Initialize(x, y);
+        tile.Initialize(_tileMaterial, x, y);
         go.transform.parent = _chunkObj.transform;
         return tile;
     }

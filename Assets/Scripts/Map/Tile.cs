@@ -8,15 +8,12 @@ public class Tile : MonoBehaviour
     private MeshFilter _filter;
     private MeshCollider _collider;
 
-    public void Initialize(int x, int y)
+    public void Initialize(Material material, int x, int y)
     {
         _mesh = CreateQuadMesh();
 
         _renderer = gameObject.AddComponent<MeshRenderer>();
-        _renderer.material = new Material(Shader.Find("Custom/TileUnlit"))
-        {
-            color = new Color(Random.Range(0.0f, 1.0f), Random.Range(0.0f, 1.0f), Random.Range(0.0f, 1.0f))
-        };
+        _renderer.material = material;
 
         _filter = gameObject.AddComponent<MeshFilter>();
         _filter.mesh = _mesh;
@@ -56,6 +53,11 @@ public class Tile : MonoBehaviour
     public void Lower(Vector3 position)
     {
         ModifyNeighboringTiles(position, -0.1f);
+    }
+
+    public void SetColor(Color color)
+    {
+        _renderer.material.color = color;
     }
 
     private void ModifyNeighboringTiles(Vector3 position, float mod)
