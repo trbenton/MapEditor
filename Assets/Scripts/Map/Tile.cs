@@ -1,19 +1,29 @@
-﻿using UnityEngine;
+﻿using System;
+using UnityEngine;
+using Random = System.Random;
 
 public class Tile : MonoBehaviour
 {
-    private Mesh _mesh;
+    private int _x;
+    private int _y;
 
+    private Mesh _mesh;
     private MeshRenderer _renderer;
     private MeshFilter _filter;
     private MeshCollider _collider;
+    private Color _color;
+    private Color _averagedColor;
 
-    public void Initialize(Material material, int x, int y)
+    public void Initialize(int x, int y, Material material)
     {
+        _x = x;
+        _y = y;
+
         _mesh = CreateQuadMesh();
 
         _renderer = gameObject.AddComponent<MeshRenderer>();
         _renderer.material = material;
+        _color = material.color;
 
         _filter = gameObject.AddComponent<MeshFilter>();
         _filter.mesh = _mesh;
@@ -58,6 +68,60 @@ public class Tile : MonoBehaviour
     public void SetColor(Color color)
     {
         _renderer.material.color = color;
+        _color = color;
+    }
+
+    public void SetAveragedColor(Color color)
+    {
+        _renderer.material.color = color;
+        _averagedColor = color;
+    }
+
+    public Color GetColor()
+    {
+        return _color;
+    }
+
+    public Color GetAveragedColor()
+    {
+        return _averagedColor;
+    }
+
+    public void AverageColors()
+    {
+        int totalCount = 0;
+        float r = 0.0f;
+        float g = 0.0f;
+        float b = 0.0f;
+
+        for (int x = -3; x <= 3; x++)
+        {
+            for (int y = -3; y <= 3; y++)
+            {
+                var tile = ChunkManager.Instance.GetTile(_x + x, _y + y);
+                if (tile == null)
+                {
+                    continue;
+                }
+
+                int distance = Mathf.RoundToInt((Vector2.zero - new Vector2(x, y)).magnitude);
+                int weight = Mathf.RoundToInt(Mathf.Pow(2, distance));
+
+                var tileColor = tile.GetColor();
+                Color.RGBToHSV(tileColor, out var hue, out var saturation, out var brightness);
+
+                var random = new Random((_x + x).GetHashCode() ^ (_y + y).GetHashCode());
+                hue += random.Next(-16, 16) / 100.0f;
+                tileColor = Color.HSVToRGB(hue, saturation, brightness);
+
+                r += (tileColor.r * tileColor.r) * weight;
+                g += (tileColor.g * tileColor.g) * weight;
+                b += (tileColor.b * tileColor.b) * weight;
+                totalCount += weight;
+            }
+        }
+
+        SetAveragedColor(new Color(Mathf.Sqrt(r / totalCount), Mathf.Sqrt(g / totalCount), Mathf.Sqrt(b / totalCount)));
     }
 
     private void ModifyNeighboringTiles(Vector3 position, float mod)

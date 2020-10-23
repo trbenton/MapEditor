@@ -196,6 +196,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6c99b7f553026da42babd9c0b8bcfd48, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  AverageColors: 0
+  DefaultColor: {r: 0.17321557, g: 0.2830189, b: 0.09478463, a: 0}
 --- !u!4 &608806914
 Transform:
   m_ObjectHideFlags: 0
