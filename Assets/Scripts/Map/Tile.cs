@@ -1,6 +1,4 @@
-﻿using System;
-using UnityEngine;
-using Random = System.Random;
+﻿using UnityEngine;
 
 public class Tile : MonoBehaviour
 {
