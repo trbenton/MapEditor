@@ -89,14 +89,17 @@ public class Tile : MonoBehaviour
 
     public void AverageColors()
     {
+        const int range = 2;
+
         int totalCount = 0;
         float r = 0.0f;
         float g = 0.0f;
         float b = 0.0f;
 
-        for (int x = -3; x <= 3; x++)
+
+        for (int x = -range; x <= range; x++)
         {
-            for (int y = -3; y <= 3; y++)
+            for (int y = -range; y <= range; y++)
             {
                 var tile = ChunkManager.Instance.GetTile(_x + x, _y + y);
                 if (tile == null)
@@ -104,16 +107,10 @@ public class Tile : MonoBehaviour
                     continue;
                 }
 
-                int distance = Mathf.RoundToInt((Vector2.zero - new Vector2(x, y)).magnitude);
+                int distance = (range + 1) - Mathf.RoundToInt((Vector2.zero - new Vector2(x, y)).magnitude);
                 int weight = Mathf.RoundToInt(Mathf.Pow(2, distance));
 
                 var tileColor = tile.GetColor();
-                Color.RGBToHSV(tileColor, out var hue, out var saturation, out var brightness);
-
-                var random = new Random((_x + x).GetHashCode() ^ (_y + y).GetHashCode());
-                hue += random.Next(-16, 16) / 100.0f;
-                tileColor = Color.HSVToRGB(hue, saturation, brightness);
-
                 r += (tileColor.r * tileColor.r) * weight;
                 g += (tileColor.g * tileColor.g) * weight;
                 b += (tileColor.b * tileColor.b) * weight;
