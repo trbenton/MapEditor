@@ -16,5 +16,9 @@ public class DearImGuiDemo : MonoBehaviour
     protected void OnLayout()
     {
         ImGui.ShowDemoWindow();
+        if (ToolManager.Instance != null)
+        {
+            ToolManager.Instance.UpdateTools(!ImGui.IsAnyItemHovered() && !ImGui.IsWindowHovered(ImGuiHoveredFlags.AnyWindow));
+        }
     }
 }

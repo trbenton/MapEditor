@@ -11,6 +11,8 @@ public enum ToolMode
 
 public class ToolManager : MonoBehaviour
 {
+    public static ToolManager Instance { get; private set; }
+
     public GameObject RaiseObject;
     public GameObject LowerObject;
     public GameObject PaintObject;
@@ -27,10 +29,10 @@ public class ToolManager : MonoBehaviour
 
     protected void Awake()
     {
-
+        Instance = this;
     }
 
-    protected void Update()
+    public void UpdateTools(bool isActive)
     {
         if (Input.GetKeyUp(KeyCode.X))
         {
@@ -42,6 +44,11 @@ public class ToolManager : MonoBehaviour
         RaiseObject.SetActive(false);
         LowerObject.SetActive(false);
         PaintObject.SetActive(false);
+
+        if (!isActive)
+        {
+            return;
+        }
 
         switch (_mode)
         {
