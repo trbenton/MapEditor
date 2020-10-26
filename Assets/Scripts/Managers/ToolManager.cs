@@ -45,7 +45,7 @@ public class ToolManager : MonoBehaviour
         LowerObject.SetActive(false);
         PaintObject.SetActive(false);
 
-        if (!isActive)
+        if (!isActive || Input.GetMouseButton(1))
         {
             return;
         }
