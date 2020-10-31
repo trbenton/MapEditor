@@ -20,6 +20,7 @@ public class ToolManager : MonoBehaviour
 
     private readonly List<ToolMode> _modes = new List<ToolMode>
     {
+        ToolMode.None,
         ToolMode.RaiseTerrain,
         ToolMode.LowerTerrain,
         ToolMode.PaintTerrain
@@ -30,6 +31,16 @@ public class ToolManager : MonoBehaviour
     protected void Awake()
     {
         Instance = this;
+    }
+
+    public ToolMode GetToolMode()
+    {
+        return _mode;
+    }
+
+    public void SetToolMode(ToolMode mode)
+    {
+        _mode = mode;
     }
 
     public void UpdateTools(bool isActive)
@@ -44,6 +55,11 @@ public class ToolManager : MonoBehaviour
         RaiseObject.SetActive(false);
         LowerObject.SetActive(false);
         PaintObject.SetActive(false);
+
+        if (Input.GetMouseButtonUp(1))
+        {
+            Input.ResetInputAxes();
+        }
 
         if (!isActive || Input.GetMouseButton(1))
         {
